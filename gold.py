@@ -34,8 +34,8 @@ smtp_server = "smtp.gmail.com"
 
 course = {'q': '20202', 'id': ''}
 # replace with your preferred quarter and course title
-enrollcode = ''
-# replace with your preferred course enrollcode
+enrollcode = [""]
+# replace with all your preferred course enrollcodes
 
 timeCount = 0
 addflag = 1
@@ -62,12 +62,12 @@ while(not time.sleep(60)):
         space = i["maxEnroll"] - i["enrolledTotal"]
         if space > 0:
             count += 1
-            if i["enrollCode"] == enrollcode:
+            if i["enrollCode"] in enrollcode:
                 if not timeCount and addflag:
                     print("Found!")
                     msg.attach(MIMEText("The course with enrollment code %s has %d available space right now!" % (
                         enrollcode, space), 'plain'))
-                    autolog.autoAdd(enrollcode)
+                    autolog.autoAdd(i["enrollCode"])
                     msg.attach(MIMEText("Added!", 'plain'))
                     server.sendmail(sender, recipients, msg.as_string())
                     server.quit()
