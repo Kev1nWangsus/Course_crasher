@@ -7,8 +7,8 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 import chromedriver_binary
 
-usernameStr = "" # enter your ucsbNetID
-passwordStr = "" # enter your password (PS: PLZ do not upload your code with your password. I don't want to know that lol)
+usernameStr = "shuo_wang" # enter your ucsbNetID
+passwordStr = "20130532@Wws" # enter your password (PS: PLZ do not upload your code with your password. I don't want to know that lol)
 
 def autoAdd(s1):
     browser = webdriver.Chrome()

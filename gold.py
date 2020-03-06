@@ -82,5 +82,5 @@ while(not time.sleep(60)):
             timeCount = 10
         else:
             timeCount -= 1
-    if !addflag:
+    if not addflag:
         break
