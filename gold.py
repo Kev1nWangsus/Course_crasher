@@ -1,7 +1,7 @@
 # Author : Shuo Wang (Kevin)
 
 # This program helps detect any available space for your target course
-#  iff waitlist is not enabled and you want to change schedule due to 
+#  iff waitlist is not enabled and you want to change schedule due to
 #  time conflict or other personal reasons
 
 import smtplib
@@ -15,39 +15,39 @@ from email.header import Header
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
-from email.utils import parseaddr, formataddr 
+from email.utils import parseaddr, formataddr
 
-
-def _format_addr(s):
-    name, addr = parseaddr(s)
-    return formataddr((Header(name, 'utf-8').encode(), addr))
+import autolog
 
 def jprint(obj):
     text = json.dumps(obj, sort_keys=True, indent=4)
     return text
 
-# Be sure to replace below with your email address and security password
-sender = "" 
-password = ""
 
-# add target recipients here
-recipients = []
+sender = ""
+password = ""
+# replace with your email and your security password
+
+recipients = [""]
+# add your preferred email to receive notification
 smtp_server = "smtp.gmail.com"
 
-course = {'q':'20202', 'id':'PHYS2'} 
+course = {'q': '20202', 'id': ''}
 # replace with your preferred quarter and course title
-enrollcode = "38513"
+enrollcode = ''
 # replace with your preferred course enrollcode
 
 timeCount = 0
+addflag = 1
 
 while(not time.sleep(60)):
     msg = MIMEMultipart()
     msg['Subject'] = "New Update!"
-    msg['From'] = "GOLD Crasher"
-    msg['To'] = ", ".join(recipients)    
+    msg['From'] = "GOLD Otto Crasher"
+    msg['To'] = ", ".join(recipients)
 
-    response = requests.get('https://web.gogaucho.app/api/sche/getClassByID', params = course)
+    response = requests.get(
+        'https://web.gogaucho.app/api/sche/getClassByID', params=course)
     print("Updated!")
 
     jdata = json.loads(jprint(response.json()))
@@ -60,22 +60,27 @@ while(not time.sleep(60)):
     msg.attach(MIMEText("Course Title: %s \n" % course['id'], 'plain'))
     for i in jdata["classSections"]:
         space = i["maxEnroll"] - i["enrolledTotal"]
-        if space:
+        if space > 0:
             count += 1
             if i["enrollCode"] == enrollcode:
-                if not timeCount:
+                if not timeCount and addflag:
                     print("Found!")
-                    msg.attach(MIMEText("The course with enrollment code %s has %d available space right now!" % (enrollcode, space), 'plain'))
+                    msg.attach(MIMEText("The course with enrollment code %s has %d available space right now!" % (
+                        enrollcode, space), 'plain'))
+                    autolog.autoAdd(enrollcode)
+                    msg.attach(MIMEText("Added!", 'plain'))
                     server.sendmail(sender, recipients, msg.as_string())
                     server.quit()
-                    timeCount = 10
-                else:
-                    timeCount -= 1
+                    addflag -= 1
+                   
     if not count:
         if not timeCount:
-            msg.attach(MIMEText("All sections are full! \n Log in to see if waitlist is enabled. \n", 'plain'))
+            msg.attach(MIMEText(
+                "All sections are full! \n Log in to see if waitlist is enabled. \n", 'plain'))
             server.sendmail(sender, recipients, msg.as_string())
             server.quit()
             timeCount = 10
         else:
             timeCount -= 1
+    if !addflag:
+        break
