@@ -10,77 +10,81 @@ import requests
 import json
 import sqlite3
 import time
-from email import encoders
-from email.header import Header
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email.utils import parseaddr, formataddr
-
 import autolog
 
-def jprint(obj):
-    text = json.dumps(obj, sort_keys=True, indent=4)
-    return text
+from email import encoders
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+def sendEmail():
+    smtp_server = "smtp.gmail.com"
+    server = smtplib.SMTP(host=smtp_server, port=587)
+    server.starttls()
+    server.login(sender, senderpw)
+    server.sendmail(sender, recipients, msg.as_string())
+    server.quit()
+
+# Enter target quarter and course here!!!!!
+currentQuarter = "20202"
+targetCourse = "PHYS2"
 
 
-sender = ""
-password = ""
-# replace with your email and your security password
 
-recipients = [""]
-# add your preferred email to receive notification
-smtp_server = "smtp.gmail.com"
+settings = json.loads(open("settings.json",mode='r').read())
 
-course = {'q': '20202', 'id': ''}
-# replace with your preferred quarter and course title
-enrollcode = [""]
-# replace with all your preferred course enrollcodes
+# load email notification settings
+sender = settings["email"]["sender"]
+senderpw = settings["email"]["senderpw"]
+recipients = settings["email"]["receiver"]
 
-timeCount = 0
+# load GOLD user settings
+usernameStr = settings["user"]["username"]
+passwordStr = settings["user"]["password"]
+
+# load course information
+enrollCodeList = settings["quarter"][currentQuarter]["courses"][targetCourse]
+
+web = {'q': currentQuarter, 'id': targetCourse}
+
+sentCount = 0
 addflag = 1
 
 while(not time.sleep(60)):
     msg = MIMEMultipart()
     msg['Subject'] = "New Update!"
-    msg['From'] = "GOLD Otto Crasher"
-    msg['To'] = ", ".join(recipients)
+    msg['From'] = "GOLD otto crasher"
+    msg['To'] = recipients
+    msg.attach(MIMEText("Course Title: %s \n" % targetCourse, 'plain'))
 
     response = requests.get(
-        'https://web.gogaucho.app/api/sche/getClassByID', params=course)
+        'https://web.gogaucho.app/api/sche/getClassByID', params=web)
     print("Updated!")
 
-    jdata = json.loads(jprint(response.json()))
+    currentCourseInfo = response.json()
 
-    server = smtplib.SMTP(host=smtp_server, port=587)
-    server.starttls()
-    server.login(sender, password)
+    courseCount = 0
 
-    count = 0
-    msg.attach(MIMEText("Course Title: %s \n" % course['id'], 'plain'))
-    for i in jdata["classSections"]:
+    for i in currentCourseInfo["classSections"]:
         space = i["maxEnroll"] - i["enrolledTotal"]
         if space > 0:
-            count += 1
-            if i["enrollCode"] in enrollcode:
-                if not timeCount and addflag:
+            courseCount += 1
+            if i["enrollCode"] in enrollCodeList and addflag:
                     print("Found!")
-                    msg.attach(MIMEText("The course with enrollment code %s has %d available space right now!" % (
-                        enrollcode, space), 'plain'))
-                    autolog.autoAdd(i["enrollCode"])
+                    msg.attach(MIMEText("The course with enrollment code %s has %d available space right now!\n" % (
+                        i["enrollCode"], space), 'plain'))
+                    autolog.autoAdd(i["enrollCode"], usernameStr, passwordStr)
                     msg.attach(MIMEText("Added!", 'plain'))
-                    server.sendmail(sender, recipients, msg.as_string())
-                    server.quit()
+                    sendEmail()
                     addflag -= 1
                    
-    if not count:
-        if not timeCount:
+    if not courseCount:
+        if not sentCount:
+            sentCount = 10
             msg.attach(MIMEText(
                 "All sections are full! \n Log in to see if waitlist is enabled. \n", 'plain'))
-            server.sendmail(sender, recipients, msg.as_string())
-            server.quit()
-            timeCount = 10
-        else:
-            timeCount -= 1
+            sendEmail()
+            
+        sentCount -= 1
+
     if not addflag:
         break

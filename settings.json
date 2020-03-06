@@ -1,0 +1,34 @@
+{
+    "user": {
+        "username": "",
+        "password": ""
+    },
+    "email": {
+        "receiver": "",
+        "sender": "",
+        "senderpw": ""
+    },
+    "quarter": {
+        "20202": {
+            "courses": {
+                "PHYS2": [],
+                "ECE139": [],
+                "ECE1B": [],
+                "LING12": [],
+                "CMPSC24": [],
+                "INT89AO": ["63453"]
+            }
+        },
+        "20204": {
+            "courses": {
+                "ECE10A": [],
+                "ECE10AL": [],
+                "CMPSC40": [],
+                "CMPSC32": [],
+                "PHYS3": [],
+                "PHYS3L": [],
+                "WRIT2E": []
+            }
+        }
+    }
+}

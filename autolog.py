@@ -7,10 +7,8 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 import chromedriver_binary
 
-usernameStr = "" # enter your ucsbNetID
-passwordStr = "" # enter your password (PS: PLZ do not upload your code with your password. I don't want to know that lol)
 
-def autoAdd(s1):
+def autoAdd(enrollcode, usernameStr, passwordStr):
     browser = webdriver.Chrome()
     browser.get(("https://my.sa.ucsb.edu/gold/Login.aspx"))
 
@@ -34,7 +32,7 @@ def autoAdd(s1):
 
     # enter enrollcode
     enrollCode = browser.find_element_by_id("ctl00_pageContent_EnrollCodeTextBox")
-    enrollCode.send_keys(s1)
+    enrollCode.send_keys(enrollcode)
     addButton = WebDriverWait(browser, 3).until(
         EC.presence_of_element_located((By.ID, "ctl00_pageContent_AddCourseButton")))
     addButton.click()
