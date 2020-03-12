@@ -40,6 +40,7 @@ web = {'q': currentQuarter, 'id': targetCourse}
 
 sentCount = 0
 addflag = 1
+seats = [17, 16]
 
 while(not time.sleep(60)):
     msg = MIMEMultipart()
@@ -54,9 +55,6 @@ while(not time.sleep(60)):
 
     currentCourseInfo = response.json()
 
-    courseCount = 0
-
-    seats = [17, 16]
     i = currentCourseInfo["classSections"][0]
     newspace = i["maxEnroll"] - i["enrolledTotal"]
     if newspace != seats[-1]:
