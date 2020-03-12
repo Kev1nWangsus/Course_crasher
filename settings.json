@@ -1,12 +1,12 @@
 {
     "user": {
-        "username": "",
-        "password": ""
+        "username": "shuo_wang",
+        "password": "20130532@Wws"
     },
     "email": {
-        "receiver": "",
-        "sender": "",
-        "senderpw": ""
+        "receiver": "shuo_wang@ucsb.edu",
+        "sender": "1875689740ws@gmail.com",
+        "senderpw": "kmcechrwxrgqlcan"
     },
     "quarter": {
         "20202": {
@@ -15,7 +15,7 @@
                 "ECE139": [],
                 "ECE1B": [],
                 "LING12": [],
-                "CMPSC24": [],
+                "CMPSC24": ["07559"],
                 "INT89AO": ["63453"]
             }
         },
