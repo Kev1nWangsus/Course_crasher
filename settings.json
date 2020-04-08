@@ -1,33 +1,17 @@
 {
     "user": {
-        "username": "shuo_wang",
-        "password": "20130532@Wws"
+        "username": "yourname",
+        "password": "yourpw"
     },
     "email": {
-        "receiver": "shuo_wang@ucsb.edu",
+        "receiver": "youremail",
         "sender": "1875689740ws@gmail.com",
         "senderpw": "kmcechrwxrgqlcan"
     },
     "quarter": {
-        "20202": {
+        "20203": {
             "courses": {
-                "PHYS2": [],
-                "ECE139": [],
-                "ECE1B": [],
-                "LING12": [],
-                "CMPSC24": ["07559"],
-                "INT89AO": ["63453"]
-            }
-        },
-        "20204": {
-            "courses": {
-                "ECE10A": [],
-                "ECE10AL": [],
-                "CMPSC40": [],
-                "CMPSC32": [],
-                "PHYS3": [],
-                "PHYS3L": [],
-                "WRIT2E": []
+                "CMPSC16": []
             }
         }
     }
